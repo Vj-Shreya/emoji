@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Emoji Chat App</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <style>
+    /* Reset default margin and padding */
+body, ul, li, h1, p {
+  margin: 0;
+  padding: 0;
+}
+
+/* Set a background color for the page */
+body {
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+/* Style the chat container */
+.chat-container {
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* Style the chat header */
+.chat-header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* Style the chat messages list */
+.messages {
+  list-style: none;
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+/* Style each chat message */
+.messages li {
+  margin-bottom: 10px;
+}
+
+/* Style the input container */
+.input-container {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+/* Style the chat input */
+#input {
+  width: 70%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+}
+
+/* Style the send button */
+#form button {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Style the send button on hover */
+#form button:hover {
+  background-color: #0056b3;
+}
+
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      Emoji Chat App
+    </div>
+    <ul class="messages" id="messages"></ul>
+    <div class="input-container">
+      <form id="form" action="">
+        <input id="input" autocomplete="off" placeholder="Type a message..." />
+        <button>Send</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+     $(function () {
+  const socket = io();
+  const $form = $('#form');
+  const $input = $('#input');
+  const $messages = $('#messages');
+
+  $form.submit(function () {
+    const message = $input.val().trim();
+    if (message !== '') {
+      socket.emit('chat message', message);
+      $input.val('');
+    }
+    return false;
+  });
+
+  socket.on('chat message', function (msg) {
+    const $messageItem = $('<li>').text(msg);
+    $messages.append($messageItem);
+    // Scroll to the bottom of the messages
+    $messages.scrollTop($messages[0].scrollHeight);
+  });
+});
+
+  </script>
+</body>
+</html>
